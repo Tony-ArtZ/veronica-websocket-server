@@ -14,6 +14,12 @@ server.on("request", app);
 ws.on("connection", (ws) => {
   console.log("Client connected !");
   ws.send("Successfully connected !");
+  app.post("/", (req, res) => {
+    const { action } = req.body;
+    console.log(action);
+    ws.send(action);
+    res.send(action);
+  })
   ws.on("message", (message) => {
     console.log(message.toString())
   })
