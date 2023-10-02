@@ -1,25 +1,22 @@
-import WebSocket, { WebSocketServer } from 'ws';
-import express from 'express';
-import 'dotenv/config'
+import http from "http";
+import { WebSocketServer } from "ws";
+import { app } from "./app.js";
 
-const PORT = process.env.PORT;
-const WSSPORT = process.env.WSS_PORT;
-
-const app = express();
-const ws = new WebSocketServer({ port: WSSPORT });
-
-app.use(express.json());
-
-ws.on("connection", (ws) => {
-  console.log("Client Connected")
-  ws.send("Hello");
-
-  app.post("/", async (req, res) => {
-    const {action} = req.body;
-    console.log(action)
-    ws.send(action);
-    res.send("success!");
-  })
-  app.listen(PORT, () => console.log(`Server started on ${PORT}`));
+const server = http.createServer();
+const ws = new WebSocketServer({
+  server: server,
 });
 
+const PORT = process.env.PORT||8080;
+
+server.on("request", app);
+
+ws.on("connection", (ws) => {
+  console.log("Client connected !");
+  ws.send("Successfully connected !");
+  ws.on("message", (message) => {
+    console.log(message.toString())
+  })
+})
+
+server.listen(PORT, () => console.log(`Server started on ${PORT}`));
