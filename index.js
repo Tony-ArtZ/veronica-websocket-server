@@ -20,6 +20,6 @@ ws.on("connection", (ws) => {
     ws.send(action);
     res.send("success!");
   })
+  app.listen(PORT, () => console.log(`Server started on ${PORT}`));
 });
 
-app.listen(PORT, () => console.log(`Server started on ${PORT}`));
