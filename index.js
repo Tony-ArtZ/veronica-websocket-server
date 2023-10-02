@@ -7,7 +7,7 @@ const ws = new WebSocketServer({
   server: server,
 });
 
-const PORT = process.env.PORT||8080;
+const PORT = process.env.PORT || 8080;
 
 server.on("request", app);
 
@@ -18,11 +18,11 @@ ws.on("connection", (ws) => {
     const { action } = req.body;
     console.log(action);
     ws.send(action);
-    res.send(action);
-  })
+    res.json({ message: "success" });
+  });
   ws.on("message", (message) => {
-    console.log(message.toString())
-  })
-})
+    console.log(message.toString());
+  });
+});
 
 server.listen(PORT, () => console.log(`Server started on ${PORT}`));
