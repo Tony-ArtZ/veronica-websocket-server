@@ -22,6 +22,7 @@ ws.on("connection", (ws) => {
   });
   ws.on("message", (message) => {
     console.log(message.toString());
+    ws.send(message.toString());
   });
 });
 
