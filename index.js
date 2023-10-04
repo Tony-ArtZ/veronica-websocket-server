@@ -9,21 +9,30 @@ const ws = new WebSocketServer({
 
 const PORT = process.env.PORT || 8080;
 
+const connetions = new Set();
+
 server.on("request", app);
 
 ws.on("connection", (ws) => {
   console.log("Client connected !");
+  connetions.add(ws);
   ws.send("Successfully connected !");
-  app.post("/", (req, res) => {
-    const { action } = req.body;
-    console.log(action);
-    ws.send(action);
-    res.json({ message: "success" });
-  });
   ws.on("message", (message) => {
     console.log(message.toString());
     ws.send(message.toString());
   });
+
+  ws.on("close", () => {
+    connetions.delete(ws);
+  });
+});
+app.post("/", (req, res) => {
+  const { action } = req.body;
+  console.log(action);
+  for(const client of connetions) {
+    client.send(action);
+  }
+  res.json({ message: "success" });
 });
 
 server.listen(PORT, () => console.log(`Server started on ${PORT}`));
